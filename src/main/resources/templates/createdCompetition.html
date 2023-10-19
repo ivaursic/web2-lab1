@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <title th:text="${competition.competitionName}"></title>
+</head>
+<body>
+<h1>Detalji natjecanja</h1>
+<p><strong>Naziv natjecanja:</strong> <span th:text="${competition.competitionName}"></span></p>
+<p><strong>Sustav bodovanja:</strong>
+  <span th:with="scoringValues=${#strings.arraySplit(competition.scoringSystem, '/')}">
+    <span th:text="${scoringValues[0]}"></span> pobjeda,
+    <span th:text="${scoringValues[1]}"></span> remi,
+    <span th:text="${scoringValues[2]}"></span> poraz
+  </span>
+</p>
+<h2>Timovi:</h2>
+<ul>
+  <li th:each="team : ${competition.teams}" th:text="${team.teamName}"></li>
+</ul>
+<p><strong>Stvorio/la:</strong> <span th:text="${competition.username}"></span></p>
+
+<h2>Raspored:</h2>
+<table>
+  <thead>
+  <tr>
+    <th>Kolo</th>
+    <th>Prvi tim</th>
+    <th>Drugi tim</th>
+    <th>Rezultat</th>
+    <th></th>
+  </tr>
+  </thead>
+  <tbody>
+  <tr th:each="match : ${matches}">
+    <td th:text="${match.roundNumber}"></td>
+    <td th:text="${match.firstTeam.teamName}"></td>
+    <td th:text="${match.secondTeam != null ? match.secondTeam.teamName : 'Slobodan'}"></td>
+    <td>
+      <!-- Prikaži rezultat samo ako drugi tim nije "Slobodan" i utakmica je odigrana -->
+      <span th:unless="${match.secondTeam == null or match.firstTeamScore == -1 or match.secondTeamScore == -1}">
+        <span th:text="${match.firstTeamScore}"></span> - <span th:text="${match.secondTeamScore}"></span>
+      </span>
+      <!-- Prikazi formu za unos ako je rezultat -1 -->
+      <div th:if="${match.firstTeamScore == -1 and match.secondTeam != null}">
+        <form th:action="@{'/competition/' + ${competition.link} + '/submit-result'}" method="post">
+          <input type="hidden" name="matchId" th:value="${match.id}">
+          <label for="firstTeamScore">Rezultat za prvi tim:</label>
+          <input type="number" id="firstTeamScore" name="firstTeamScore" min="0" required><br>
+          <label for="secondTeamScore">Rezultat za drugi tim:</label>
+          <input type="number" id="secondTeamScore" name="secondTeamScore" min="0" required><br>
+          <input type="submit" value="Unesi rezultat">
+        </form>
+      </div>
+    </td>
+    <td>
+      <!-- Dodajte link za uređivanje rezultata ako je rezultat -1 -->
+      <a th:if="${match.firstTeamScore != -1}" th:href="@{'/competition/' + ${competition.link} + '/edit-result/' + ${match.id}}">Uredi</a>
+    </td>
+  </tr>
+  </tbody>
+</table>
+
+<p><strong>Link na natjecanje:</strong> <a th:href="@{'/competition/' + ${competition.link}}" th:text="${competition.link}">Link na natjecanje</a></p>
+
+</body>
+</html>

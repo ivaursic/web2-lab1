@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Novo natjecanje</title>
+</head>
+<body>
+<h1>Unos Natjecanja</h1>
+
+<form action="/createCompetition" method="post">
+    <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
+
+    <label for="competitionName">Ime natjecanja:</label>
+    <input type="text" id="competitionName" name="competitionName" required><br>
+
+    <label for="competitors">Timovi (odvojeni točkom zarez ili novim redom, 4 - 8 timova):</label>
+    <textarea id="competitors" name="competitors" required></textarea><br>
+
+    <label for="scoringSystem">Sustav bodovanja:</label>
+    <input type="text" id="scoringSystem" name="scoringSystem" required><br>
+
+    <button type="submit">Stvori natjecanje</button>
+</form>
+</body>
+</html>

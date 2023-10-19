@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <title th:text="${competition.competitionName}"></title>
+</head>
+<body>
+<h1>Detalji natjecanja</h1>
+<p><strong>Naziv natjecanja:</strong> <span th:text="${competition.competitionName}"></span></p>
+<p><strong>Sustav bodovanja:</strong>
+  <span th:with="scoringValues=${#strings.arraySplit(competition.scoringSystem, '/')}">
+    <span th:text="${scoringValues[0]}"></span> pobjeda,
+    <span th:text="${scoringValues[1]}"></span> remi,
+    <span th:text="${scoringValues[2]}"></span> poraz
+  </span>
+</p>
+<h2>Poredak:</h2>
+<table>
+  <thead>
+  <tr>
+    <th>Pozicija</th>
+    <th>Tim</th>
+    <th>Bodovi</th>
+  </tr>
+  </thead>
+  <tbody th:each="team, stat : ${teams}">
+  <tr>
+    <td th:text="${stat.index + 1}"></td>
+    <td th:text="${team.teamName}"></td>
+    <td th:text="${team.score}"></td>
+  </tr>
+  </tbody>
+</table>
+
+<h2>Raspored:</h2>
+<table>
+  <thead>
+  <tr>
+    <th>Kolo</th>
+    <th>Prvi tim</th>
+    <th>Drugi tim</th>
+    <th>Rezultat</th>
+  </tr>
+  </thead>
+  <tbody th:each="match : ${matches}">
+  <tr>
+    <td th:text="${match.roundNumber}"></td>
+    <td th:text="${match.firstTeam.teamName}"></td>
+    <td th:text="${match.secondTeam != null ? match.secondTeam.teamName : 'Slobodan'}"></td>
+    <td>
+      <span th:unless="${match.secondTeam == null or match.firstTeamScore == -1 or match.secondTeamScore == -1}">
+        <span th:text="${match.firstTeamScore}"></span> - <span th:text="${match.secondTeamScore}"></span>
+      </span>
+    </td>
+  </tr>
+  </tbody>
+</table>
+
+</body>
+</html>
