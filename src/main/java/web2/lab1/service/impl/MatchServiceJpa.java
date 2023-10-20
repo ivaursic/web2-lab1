@@ -30,18 +30,13 @@ public class MatchServiceJpa implements MatchService {
     }
 
     @Override
-    public void updateTeamScores(Match match) {
+    public void setTeamScores(Match match) {
         String scoringSystem = match.getCompetition().getScoringSystem();
         String[] scoringValues = scoringSystem.split("/");
 
-        int winPoints = Integer.parseInt(scoringValues[0]);
-        int drawPoints = Integer.parseInt(scoringValues[1]);
-        int lossPoints = Integer.parseInt(scoringValues[2]);
-
-        System.out.println("win: " + winPoints);
-        System.out.println("draw: " + drawPoints);
-        System.out.println("loss: " + lossPoints);
-
+        double winPoints = Double.parseDouble(scoringValues[0]);
+        double drawPoints = Double.parseDouble(scoringValues[1]);
+        double lossPoints = Double.parseDouble(scoringValues[2]);
 
         Team firstTeam = match.getFirstTeam();
         Team secondTeam = match.getSecondTeam();
@@ -52,10 +47,12 @@ public class MatchServiceJpa implements MatchService {
         // Ako prvi tim pobijedi
         if (firstTeamScore > secondTeamScore) {
             firstTeam.setScore(firstTeam.getScore() + winPoints);
+            secondTeam.setScore(secondTeam.getScore() + lossPoints);
         }
         // Ako drugi tim pobijedi
         else if (secondTeamScore > firstTeamScore) {
             secondTeam.setScore(secondTeam.getScore() + winPoints);
+            firstTeam.setScore(firstTeam.getScore() + lossPoints);
         }
         // Ako je neriješeno
         else {
@@ -67,5 +64,60 @@ public class MatchServiceJpa implements MatchService {
         teamService.save(firstTeam);
         teamService.save(secondTeam);
     }
+    @Override
+    public void updateTeamScores(Match match, int firstTeamScore, int secondTeamScore) {
+        String scoringSystem = match.getCompetition().getScoringSystem();
+        String[] scoringValues = scoringSystem.split("/");
+
+        double winPoints = Double.parseDouble(scoringValues[0]);
+        double drawPoints = Double.parseDouble(scoringValues[1]);
+        double lossPoints = Double.parseDouble(scoringValues[2]);
+
+        // Dohvatite timove iz meča
+        Team firstTeam = match.getFirstTeam();
+        Team secondTeam = match.getSecondTeam();
+
+        // Dohvatite bodove iz trenutnog rezultata meča
+        int currentFirstTeamScore = match.getFirstTeamScore();
+        int currentSecondTeamScore = match.getSecondTeamScore();
+
+        int currentResult = currentFirstTeamScore - currentSecondTeamScore;
+        int newResult = firstTeamScore - secondTeamScore;
+
+        if((newResult < 0 && currentResult < 0) || (newResult == 0 && currentResult == 0) || (newResult > 0 && currentResult > 0))
+            return;
+
+        if(currentResult < 0){
+            secondTeam.setScore(secondTeam.getScore() - winPoints);
+            firstTeam.setScore(firstTeam.getScore() - lossPoints);
+        } if(currentResult > 0){
+            firstTeam.setScore(firstTeam.getScore() - winPoints);
+            secondTeam.setScore(secondTeam.getScore() - lossPoints);
+        } else if (currentResult == 0) {
+            firstTeam.setScore(firstTeam.getScore() - drawPoints);
+            secondTeam.setScore(secondTeam.getScore() - drawPoints);
+        }
+
+        if(newResult > 0){
+            firstTeam.setScore(firstTeam.getScore() + winPoints);
+            secondTeam.setScore(secondTeam.getScore() + lossPoints);
+        } if(newResult < 0){
+            secondTeam.setScore(secondTeam.getScore() + winPoints);
+            firstTeam.setScore(firstTeam.getScore() + lossPoints);
+        } else if (newResult == 0) {
+            firstTeam.setScore(firstTeam.getScore() + drawPoints);
+            secondTeam.setScore(secondTeam.getScore() + drawPoints);
+        }
+
+        // Spremi ažurirane timove u bazu podataka
+        teamService.save(firstTeam);
+        teamService.save(secondTeam);
+
+        // Ako želite, možete ažurirati i rezultate u samom meču
+        match.setFirstTeamScore(firstTeamScore);
+        match.setSecondTeamScore(secondTeamScore);
+        matchRepository.save(match);
+    }
+
 
 }

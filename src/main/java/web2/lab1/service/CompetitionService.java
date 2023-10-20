@@ -19,4 +19,8 @@ public interface CompetitionService {
 
     @Transactional
     void updateCompetitionResults(Competition competition);
+
+    public List<Competition> getCompetitionsByUsername(String username);
+
+    Competition findById(Long id);
 }

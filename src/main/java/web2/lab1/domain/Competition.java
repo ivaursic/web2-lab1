@@ -104,4 +104,6 @@ public class Competition {
     private String generateUniqueLink() {
         return UUID.randomUUID().toString();
     }
+
+
 }

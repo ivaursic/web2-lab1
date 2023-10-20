@@ -125,7 +125,7 @@ public class CompetitionController {
         // Spremite ažuriranu utakmicu u bazu podataka
         matchService.save(match);
 
-        matchService.updateTeamScores(match);
+        matchService.setTeamScores(match);
 
         // Ponovno dohvatite sve utakmice za prikaz na stranici
         Competition competition = match.getCompetition();
@@ -161,16 +161,12 @@ public class CompetitionController {
         // Dohvatite meč iz baze podataka prema matchId
         Match match = matchService.findById(matchId);
 
-        // Ažurirajte rezultat meča
-        match.setFirstTeamScore(firstTeamScore);
-        match.setSecondTeamScore(secondTeamScore);
-
-        // Spremite ažurirani meč u bazu podataka
-        matchService.save(match);
 
         // Ponovno dohvatite sve utakmice za prikaz na stranici
         Competition competition = match.getCompetition();
         List<Match> matches = competition.getMatches();
+
+        matchService.updateTeamScores(match, firstTeamScore, secondTeamScore);
 
         // Sortirajte utakmice po rundama i brojevima mečeva
         Collections.sort(matches, Comparator.comparing(Match::getRoundNumber).thenComparing(Match::getMatchNumber));
@@ -183,6 +179,35 @@ public class CompetitionController {
         // Preusmjerite korisnika na stranicu s rasporedom
         return "createdCompetition";
     }
+
+    @GetMapping("/my-competitions")
+    public String showUserCompetitions(Principal principal, Model model) {
+        if (principal != null) {
+            OAuth2AuthenticationToken oauthToken = (OAuth2AuthenticationToken) principal;
+            OAuth2User oauth2User = oauthToken.getPrincipal();
+            String username = oauth2User.getAttribute("name"); // Dohvatite korisničko ime iz atributa "name"
+
+            List<Competition> userCompetitions = competitionService.getCompetitionsByUsername(username);
+            model.addAttribute("competitions", userCompetitions);
+
+            return "myCompetitions"; // Ovo je ime Thymeleaf templatea za prikazivanje natjecanja korisnika
+        }
+        return "redirect:/error"; // Preusmjeri na grešku ako korisnik nije prijavljen
+    }
+
+    @GetMapping("/competition/{id}/edit")
+    public String showEditCompetitionForm(@PathVariable Long id, Model model) {
+        // Dohvatite natjecanje iz baze podataka prema ID-u i prosljeđujte ga na formu za uređivanje
+        Competition competition = competitionService.findById(id);
+        Schedule schedule = competition.getSchedule();
+        model.addAttribute("schedule", schedule);
+        List<Match> matches = competition.getMatches();
+        Collections.sort(matches, Comparator.comparing(Match::getRoundNumber).thenComparing(Match::getMatchNumber));
+        model.addAttribute("matches", matches);
+        model.addAttribute("competition", competition);
+        return "createdCompetition"; // Zamijenajte ovo s nazivom vaše Thymeleaf stranice za uređivanje natjecanja
+    }
+
 
 
 }

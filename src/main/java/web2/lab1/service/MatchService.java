@@ -9,5 +9,7 @@ public interface MatchService {
 
     void save(Match match);
 
-    void updateTeamScores(Match match);
+    void setTeamScores(Match match);
+
+    public void updateTeamScores(Match match, int firtTeamScore, int secondTeamScore);
 }

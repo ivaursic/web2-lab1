@@ -168,5 +168,15 @@ public class CompetitionServiceJpa implements CompetitionService {
         competitionRepository.save(competition);
     }
 
+    @Override
+    public List<Competition> getCompetitionsByUsername(String username) {
+        return competitionRepository.findByUsername(username);
+    }
+
+    @Override
+    public Competition findById(Long id) {
+        return competitionRepository.findById(id).orElseThrow();
+    }
+
 }
 

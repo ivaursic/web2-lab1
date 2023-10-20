@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <title>Moja Natjecanja</title>
+</head>
+<body>
+<h1>Moja Natjecanja</h1>
+
+<ul>
+  <li th:each="competition : ${competitions}">
+    <a th:href="@{'/competition/' + ${competition.idCompetiton} + '/edit'}">Uredi natjecanje: <span th:text="${competition.competitionName}"></span></a>
+  </li>
+</ul>
+
+<!-- Gumb za stvaranje novog natjecanja -->
+<a href="/competitionForm">Stvori novo natjecanje</a>
+</body>
+</html>
