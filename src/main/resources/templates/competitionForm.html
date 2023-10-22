@@ -2,6 +2,7 @@
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
+    <link rel="stylesheet" href="styles.css">
     <title>Novo natjecanje</title>
 </head>
 <body>
@@ -16,7 +17,7 @@
     <label for="competitors">Timovi (odvojeni točkom zarez ili novim redom, 4 - 8 timova):</label>
     <textarea id="competitors" name="competitors" required></textarea><br>
 
-    <label for="scoringSystem">Sustav bodovanja:</label>
+    <label for="scoringSystem">Sustav bodovanja (pobjeda/remi/poraz, decimalni brojevi s točkom):</label>
     <input type="text" id="scoringSystem" name="scoringSystem" required><br>
 
     <button type="submit">Stvori natjecanje</button>

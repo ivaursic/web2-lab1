@@ -208,6 +208,15 @@ public class CompetitionController {
         return "createdCompetition"; // Zamijenajte ovo s nazivom vaše Thymeleaf stranice za uređivanje natjecanja
     }
 
+    @RequestMapping("/my-logout")
+    public String logout(Principal principal) {
+        if (principal != null) {
+            OAuth2AuthenticationToken oauthToken = (OAuth2AuthenticationToken) principal;
+            oauthToken.setAuthenticated(false);
+        }
+        return "redirect:/logout";
+    }
+
 
 
 }

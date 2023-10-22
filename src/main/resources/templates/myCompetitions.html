@@ -2,6 +2,7 @@
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
   <meta charset="UTF-8">
+  <link rel="stylesheet" href="styles.css">
   <title>Moja Natjecanja</title>
 </head>
 <body>
@@ -15,5 +16,8 @@
 
 <!-- Gumb za stvaranje novog natjecanja -->
 <a href="/competitionForm">Stvori novo natjecanje</a>
+<form th:action="@{/logout}" method="post">
+  <input type="submit" value="Odjava">
+</form>
 </body>
 </html>

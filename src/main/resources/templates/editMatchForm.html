@@ -1,17 +1,18 @@
-<!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org">
-<head>
-  <meta charset="UTF-8">
-  <title>Uredi rezultat</title>
-</head>
-<body>
-<h1>Uredi rezultat meča</h1>
-<form th:action="@{'/competition/' + ${competition.link} + '/edit-result/' + ${match.id}}" method="post">
-  <label for="firstTeamScore">Rezultat prvog tima:</label>
-  <input type="number" id="firstTeamScore" name="firstTeamScore" min="0" required><br>
-  <label for="secondTeamScore">Rezultat drugog tima:</label>
-  <input type="number" id="secondTeamScore" name="secondTeamScore" min="0" required><br>
-  <input type="submit" value="Spremi">
-</form>
-</body>
-</html>
+  <!DOCTYPE html>
+  <html lang="en" xmlns:th="http://www.thymeleaf.org">
+  <head>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" href="styles.css">
+    <title>Uredi rezultat</title>
+  </head>
+  <body>
+  <h1>Uredi rezultat meča</h1>
+  <form th:action="@{'/competition/' + ${competition.link} + '/edit-result/' + ${match.id}}" method="post">
+    <label for="firstTeamScore">Rezultat prvog tima:</label>
+    <input type="number" id="firstTeamScore" name="firstTeamScore" min="0" required><br>
+    <label for="secondTeamScore">Rezultat drugog tima:</label>
+    <input type="number" id="secondTeamScore" name="secondTeamScore" min="0" required><br>
+    <input type="submit" value="Spremi">
+  </form>
+  </body>
+  </html>
