@@ -57,6 +57,15 @@
 					<target>17</target> <!-- Postavite željenu verziju Jave -->
 				</configuration>
 			</plugin>
+			<plugin>
+				<groupId>org.springframework.boot</groupId>
+				<artifactId>spring-boot-maven-plugin</artifactId>
+				<version>${project.parent.version}</version>
+				<configuration>
+					<mainClass>web2.lab1.Lab1Application</mainClass>
+					<layout>JAR</layout>
+				</configuration>
+			</plugin>
 		</plugins>
 	</build>
 
