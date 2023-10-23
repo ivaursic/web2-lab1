@@ -1,30 +1,8 @@
-# Container za izgradnju (build) aplikacije
-FROM openjdk:17-alpine AS builder
+FROM maven:3.8.5-openjdk-17 as build
+COPY . .
+RUN mvn clean package -DskipTests
 
-# Kopiranje izvornog koda u container
-WORKDIR /app
-COPY ./.mvn ./.mvn
-COPY ./mvnw .
-COPY ./pom.xml .
-COPY ./src src
-
-RUN chmod +x mvnw
-
-# Pokretanje builda
-RUN ./mvnw clean package
-
-# Stvaranje containera u kojem ce se vrtiti aplikacija
-FROM openjdk:17-alpine
-
-## Ovdje je moguce instalirati alate potrebne za rad aplikacije. Vjerojatno vam nece trebati, no dobro je znati.
-## Linux distro koji se koristi je Alpine, stoga se kao package manager koristi apk
-#RUN apk install <nesto>
-
-# Kopiranje izvrsnog JAR-a iz build containera u izvrsni container
-COPY --from=builder target/*.jar /app.jar
-
-# Izlaganje porta
+FROM openjdk:17.0.1-jdk-slim
+COPY --from=build /target/lab1-0.0.1-SNAPSHOT.jar lab1.jar
 EXPOSE 8080
-
-# Naredba kojom se pokrece aplikacija
-ENTRYPOINT ["java","-jar","/app.jar"]
+ENTRYPOINT ["java", "-jar", "lab1.jar"]
